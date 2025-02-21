@@ -10,25 +10,27 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
   const [tasks, setTasks] = useState<Task[]>([])
   const { isAuthenticated } = useAuth()
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      fetchTasks()
-    }
-  }, [isAuthenticated])
-
   const fetchTasks = async () => {
     try {
       const { data } = await api.get('/tasks')
+      console.log('Fetched tasks:', data) // Debug log
       setTasks(data.tasks)
     } catch (error) {
       console.error('Error fetching tasks:', error)
     }
   }
 
+  // Fetch tasks when authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchTasks()
+    }
+  }, [isAuthenticated])
+
   const addTask = async (task: Omit<Task, 'id' | 'createdAt'>) => {
     try {
       const { data } = await api.post('/tasks', task)
-      setTasks((prev) => [data, ...prev])
+      setTasks((prev) => [data, ...prev]) // Add new task to start of list
       return data
     } catch (error) {
       console.error('Error adding task:', error)

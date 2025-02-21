@@ -1,38 +1,41 @@
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { Toaster } from '@/components/ui/toaster'
+import { AuthProvider } from '@/contexts/AuthContext'
+import { TaskProvider } from '@/contexts/TaskContext'
+import { ProtectedRoute } from '@/components/ProtectedRoute'
+import Login from '@/pages/Login'
+import Index from '@/pages/Index'
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "./contexts/AuthContext";
-import { TaskProvider } from "./contexts/TaskContext";
-import Layout from "./components/Layout";
-import Login from "./pages/Login";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
-
-const queryClient = new QueryClient();
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
+function App() {
+  return (
+    <Router>
       <AuthProvider>
         <TaskProvider>
+          <Routes>
+            {/* Redirect root to login */}
+            <Route path="/" element={<Navigate to="/login" replace />} />
+            
+            {/* Public route */}
+            <Route path="/login" element={<Login />} />
+            
+            {/* Protected route */}
+            <Route
+              path="/tasks"
+              element={
+                <ProtectedRoute>
+                  <Index />
+                </ProtectedRoute>
+              }
+            />
+            
+            {/* Catch all redirect to login */}
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          </Routes>
           <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Layout>
-              <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/" element={<Index />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </Layout>
-          </BrowserRouter>
         </TaskProvider>
       </AuthProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+    </Router>
+  )
+}
 
-export default App;
+export default App

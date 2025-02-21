@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -20,7 +19,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        mono: ["Fira Code", "Menlo", "Consolas", "monospace"],
+        sans: ['Fira Code', 'monospace'],
+        mono: ['Fira Code', 'monospace'],
       },
       colors: {
         border: "hsl(var(--border))",

@@ -15,16 +15,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [])
 
+  const register = async (username: string, password: string) => {
+    const { data } = await api.post('/auth/register', { username, password })
+    return data
+  }
+
   const login = async (username: string, password: string) => {
-    try {
-      const { data } = await api.post('/auth/login', { username, password })
-      localStorage.setItem('token', data.token)
-      localStorage.setItem('user', JSON.stringify(data.user))
-      setUser(data.user)
-      return data
-    } catch (error) {
-      throw error
-    }
+    const { data } = await api.post('/auth/login', { username, password })
+    localStorage.setItem('token', data.token)
+    localStorage.setItem('user', JSON.stringify(data.user))
+    setUser(data.user)
+    return data
   }
 
   const logout = () => {
@@ -35,7 +36,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, isAuthenticated: !!user }}
+      value={{ user, login, register, logout, isAuthenticated: !!user }}
     >
       {children}
     </AuthContext.Provider>
