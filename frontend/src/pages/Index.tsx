@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react'
 import { TaskContext } from '@/contexts/TaskContext'
-import { TaskPriority, TaskCategory } from '@/types/task'
+import { TaskPriority, TaskCategory, Task } from '@/types/task'
 import { Plus, Star, Trash2, Copy, CheckCircle2, RotateCcw } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/hooks/useAuth'
@@ -31,6 +31,9 @@ const Index = () => {
     priority: '' as TaskPriority,
     category: '' as TaskCategory,
   })
+
+  const [editingTask, setEditingTask] = useState<string | null>(null)
+  const [editForm, setEditForm] = useState<Partial<Task>>({})
 
   const getPriorityWeight = (priority?: TaskPriority) => {
     switch (priority) {
@@ -122,6 +125,33 @@ const Index = () => {
 
   const activeTasks = filteredTasks.filter((task) => !task.completed)
   const completedTasks = filteredTasks.filter((task) => task.completed)
+
+  const handleTaskEdit = async (taskId: string) => {
+    if (!editForm.title?.trim()) {
+      toast({
+        title: 'Error',
+        description: 'Task title is required',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    try {
+      await updateTask(taskId, editForm)
+      setEditingTask(null)
+      setEditForm({})
+      toast({
+        title: 'Success',
+        description: 'Task updated successfully',
+      })
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to update task',
+        variant: 'destructive',
+      })
+    }
+  }
 
   return (
     <div className="min-h-screen bg-terminal-bg p-4 text-terminal-fg">
@@ -271,37 +301,144 @@ const Index = () => {
                   }}
                   className="mt-1 rounded border-terminal-border"
                 />
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-medium">{task.title}</h3>
-                    {task.priority && (
-                      <span
-                        className={`rounded px-2 py-0.5 text-xs ${
-                          task.priority === 'High'
-                            ? 'bg-terminal-error/20 text-terminal-error'
-                            : task.priority === 'Medium'
-                              ? 'bg-yellow-500/20 text-yellow-500'
-                              : 'bg-blue-500/20 text-blue-500'
-                        }`}
-                      >
-                        {task.priority}
-                      </span>
-                    )}
-                    {task.category && (
-                      <span className="rounded bg-terminal-border/50 px-2 py-0.5 text-xs">
-                        {task.category}
-                      </span>
-                    )}
-                  </div>
-                  {task.description && (
-                    <p className="mt-1 text-sm text-terminal-fg/75">
-                      {task.description}
-                    </p>
-                  )}
-                  {task.dueDate && (
-                    <p className="mt-1 text-xs text-terminal-fg/50">
-                      Due: {new Date(task.dueDate).toLocaleDateString()}
-                    </p>
+                <div
+                  className="flex-1"
+                  onClick={() => {
+                    if (!editingTask) {
+                      setEditingTask(task.id)
+                      setEditForm(task)
+                    }
+                  }}
+                >
+                  {editingTask === task.id ? (
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault()
+                        handleTaskEdit(task.id)
+                      }}
+                      className="space-y-2"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <input
+                        type="text"
+                        value={editForm.title || ''}
+                        onChange={(e) =>
+                          setEditForm({ ...editForm, title: e.target.value })
+                        }
+                        className="w-full rounded border border-terminal-border bg-transparent px-2 py-1 text-terminal-fg"
+                        placeholder="Task title"
+                        autoFocus
+                      />
+                      <input
+                        type="text"
+                        value={editForm.description || ''}
+                        onChange={(e) =>
+                          setEditForm({
+                            ...editForm,
+                            description: e.target.value,
+                          })
+                        }
+                        className="w-full rounded border border-terminal-border bg-transparent px-2 py-1 text-terminal-fg"
+                        placeholder="Description (optional)"
+                      />
+                      <div className="flex gap-2">
+                        <input
+                          type="date"
+                          value={editForm.dueDate || ''}
+                          onChange={(e) =>
+                            setEditForm({
+                              ...editForm,
+                              dueDate: e.target.value,
+                            })
+                          }
+                          className="rounded border border-terminal-border bg-transparent px-2 py-1 text-terminal-fg"
+                        />
+                        <select
+                          value={editForm.priority || ''}
+                          onChange={(e) =>
+                            setEditForm({
+                              ...editForm,
+                              priority: e.target.value as TaskPriority,
+                            })
+                          }
+                          className="rounded border border-terminal-border bg-transparent px-2 py-1 text-terminal-fg"
+                        >
+                          <option value="">Priority</option>
+                          <option value="High">High</option>
+                          <option value="Medium">Medium</option>
+                          <option value="Low">Low</option>
+                        </select>
+                        <select
+                          value={editForm.category || ''}
+                          onChange={(e) =>
+                            setEditForm({
+                              ...editForm,
+                              category: e.target.value as TaskCategory,
+                            })
+                          }
+                          className="rounded border border-terminal-border bg-transparent px-2 py-1 text-terminal-fg"
+                        >
+                          <option value="">Category</option>
+                          <option value="Work">Work</option>
+                          <option value="Personal">Personal</option>
+                          <option value="Shopping">Shopping</option>
+                          <option value="Health">Health</option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          type="submit"
+                          className="rounded bg-terminal-accent px-3 py-1 text-sm text-black"
+                        >
+                          Save
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditingTask(null)
+                            setEditForm({})
+                          }}
+                          className="rounded border border-terminal-border px-3 py-1 text-sm"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </form>
+                  ) : (
+                    <>
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-medium">{task.title}</h3>
+                        {task.priority && (
+                          <span
+                            className={`rounded px-2 py-0.5 text-xs ${
+                              task.priority === 'High'
+                                ? 'bg-terminal-error/20 text-terminal-error'
+                                : task.priority === 'Medium'
+                                  ? 'bg-yellow-500/20 text-yellow-500'
+                                  : 'bg-blue-500/20 text-blue-500'
+                            }`}
+                          >
+                            {task.priority}
+                          </span>
+                        )}
+                        {task.category && (
+                          <span className="rounded bg-terminal-border/50 px-2 py-0.5 text-xs">
+                            {task.category}
+                          </span>
+                        )}
+                      </div>
+                      {task.description && (
+                        <p className="mt-1 text-sm text-terminal-fg/75">
+                          {task.description}
+                        </p>
+                      )}
+                      {task.dueDate && (
+                        <p className="mt-1 text-xs text-terminal-fg/50">
+                          Due: {new Date(task.dueDate).toLocaleDateString()}
+                        </p>
+                      )}
+                    </>
                   )}
                 </div>
                 <div className="flex gap-2">
@@ -331,7 +468,6 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Completed Tasks */}
         {completedTasks.length > 0 && (
           <div className="space-y-4 rounded-lg border border-terminal-border bg-terminal-bg/50 p-6 backdrop-blur">
             <h2 className="text-xl font-bold text-terminal-accent/75">
