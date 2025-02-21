@@ -1,8 +1,8 @@
 import { Request, Response } from 'express'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-import { prisma } from '@/lib/prisma'
-import env from '@/config/env'
+import { prisma } from '../lib/prisma'
+import env from '../config/env'
 import { z } from 'zod'
 import { SignOptions } from 'jsonwebtoken'
 
@@ -22,7 +22,7 @@ const createToken = (userId: string) => {
 export const register = async (req: Request, res: Response) => {
   try {
     const data = userSchema.parse(req.body)
-    
+
     const existingUser = await prisma.user.findUnique({
       where: { username: data.username },
     })
@@ -87,4 +87,4 @@ export const login = async (req: Request, res: Response) => {
     }
     res.status(500).json({ message: 'Error logging in' })
   }
-} 
+}

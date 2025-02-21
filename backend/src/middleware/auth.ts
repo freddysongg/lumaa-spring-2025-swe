@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
-import env from '@/config/env'
-import { prisma } from '@/lib/prisma'
+import env from '../config/env'
+import { prisma } from '../lib/prisma'
 
 export interface AuthRequest extends Request {
   user?: {
@@ -37,4 +37,4 @@ export const auth = async (
   } catch (error) {
     res.status(401).json({ message: 'Invalid authentication token' })
   }
-} 
+}

@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react'
 import { TaskContext } from '@/contexts/TaskContext'
-import { Task, TaskPriority, TaskCategory } from '@/types/task'
+import { TaskPriority, TaskCategory } from '@/types/task'
 import { Plus, Star, Trash2, Copy, CheckCircle2, RotateCcw } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/hooks/useAuth'
@@ -128,7 +128,9 @@ const Index = () => {
       <div className="mx-auto max-w-6xl space-y-8">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-terminal-accent">task-tracker</h1>
+          <h1 className="text-2xl font-bold text-terminal-accent">
+            task-tracker
+          </h1>
           <button
             onClick={logout}
             className="rounded border border-terminal-border px-4 py-2 text-sm hover:bg-terminal-border/20"
@@ -147,7 +149,9 @@ const Index = () => {
               type="text"
               placeholder="Task title"
               value={newTask.title}
-              onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+              onChange={(e) =>
+                setNewTask({ ...newTask, title: e.target.value })
+              }
               className="w-full rounded border border-terminal-border bg-transparent px-4 py-2 text-terminal-fg placeholder-terminal-muted focus:border-terminal-accent focus:outline-none"
             />
             <input
@@ -244,7 +248,9 @@ const Index = () => {
 
         {/* Active Tasks */}
         <div className="space-y-4 rounded-lg border border-terminal-border bg-terminal-bg/50 p-6 backdrop-blur">
-          <h2 className="text-xl font-bold text-terminal-accent">Active Tasks</h2>
+          <h2 className="text-xl font-bold text-terminal-accent">
+            Active Tasks
+          </h2>
           <div className="space-y-2">
             {activeTasks.map((task) => (
               <div

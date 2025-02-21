@@ -3,8 +3,9 @@ import express from 'express'
 import cors from 'cors'
 import morgan from 'morgan'
 import rateLimit from 'express-rate-limit'
-import env from '@config/env'
-import authRoutes from '@/routes/auth.routes'
+import env from './config/env'
+import authRoutes from './routes/auth.routes'
+import taskRoutes from './routes/task.routes'
 
 const app = express()
 
@@ -36,6 +37,7 @@ const limiter = rateLimit({
 app.use(limiter)
 
 app.use('/api/auth', authRoutes)
+app.use('/api/tasks', taskRoutes)
 
 app.use(
   (

@@ -1,6 +1,6 @@
 import { useContext } from 'react'
-import { TaskContext } from '../contexts/TaskContext'
-import type { TaskContextType } from '../contexts/taskTypes'
+import { TaskContext } from '@/contexts/TaskContext'
+import type { TaskContextType } from '@/types/taskTypes'
 
 export const useTask = (): TaskContextType => {
   const context = useContext(TaskContext)

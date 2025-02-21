@@ -11,7 +11,8 @@
     "migrate": "npx prisma migrate dev ts-node src/scripts/init-db.ts",
     "test": "jest",
     "format": "prettier --config .prettierrc --write \"src/**/*.{ts,tsx,js,jsx}\"",
-    "format:check": "prettier --config .prettierrc --check \"src/**/*.{ts,tsx,js,jsx}\""
+    "format:check": "prettier --config .prettierrc --check \"src/**/*.{ts,tsx,js,jsx}\"",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@prisma/client": "^5.10.2",
@@ -36,6 +37,10 @@
     "@types/morgan": "^1.9.9",
     "@types/node": "^20.11.24",
     "@types/supertest": "^6.0.2",
+    "eslint": "^9.20.1",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-react-refresh": "^0.4.19",
+    "globals": "^16.0.0",
     "jest": "^29.7.0",
     "nodemon": "^3.1.0",
     "prettier": "^3.5.1",
@@ -43,7 +48,8 @@
     "supertest": "^6.3.4",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "typescript-eslint": "^8.24.1"
   },
   "_moduleAliases": {
     "@": "dist",

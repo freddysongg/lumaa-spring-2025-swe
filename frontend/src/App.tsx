@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from 'react-router-dom'
 import { Toaster } from '@/components/ui/toaster'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { TaskProvider } from '@/contexts/TaskContext'
@@ -12,13 +17,10 @@ function App() {
       <AuthProvider>
         <TaskProvider>
           <Routes>
-            {/* Redirect root to login */}
             <Route path="/" element={<Navigate to="/login" replace />} />
-            
-            {/* Public route */}
+
             <Route path="/login" element={<Login />} />
-            
-            {/* Protected route */}
+
             <Route
               path="/tasks"
               element={
@@ -27,8 +29,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            
-            {/* Catch all redirect to login */}
+
             <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>
           <Toaster />

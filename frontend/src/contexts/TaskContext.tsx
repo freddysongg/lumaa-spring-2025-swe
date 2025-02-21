@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, { createContext, useState, useEffect } from 'react'
 import { Task } from '@/types/task'
-import type { TaskContextType } from '@/contexts/taskTypes'
+import type { TaskContextType } from '@/types/taskTypes'
 import api from '@/lib/api'
 import { useAuth } from '@/hooks/useAuth'
 
@@ -13,14 +13,13 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
   const fetchTasks = async () => {
     try {
       const { data } = await api.get('/tasks')
-      console.log('Fetched tasks:', data) // Debug log
+      console.log('Fetched tasks:', data)
       setTasks(data.tasks)
     } catch (error) {
       console.error('Error fetching tasks:', error)
     }
   }
 
-  // Fetch tasks when authenticated
   useEffect(() => {
     if (isAuthenticated) {
       fetchTasks()
@@ -30,7 +29,7 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
   const addTask = async (task: Omit<Task, 'id' | 'createdAt'>) => {
     try {
       const { data } = await api.post('/tasks', task)
-      setTasks((prev) => [data, ...prev]) // Add new task to start of list
+      setTasks((prev) => [data, ...prev])
       return data
     } catch (error) {
       console.error('Error adding task:', error)

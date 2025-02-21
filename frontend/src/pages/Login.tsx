@@ -13,7 +13,6 @@ const Login = () => {
   const { toast } = useToast()
   const { login, register, isAuthenticated } = useAuth()
 
-  // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/tasks')
@@ -41,7 +40,12 @@ const Login = () => {
       const e = error as { response?: { data?: { message?: string } } }
       toast({
         title: 'Error',
-        description: 'response' in e ? e.response?.data?.message : error instanceof Error ? error.message : 'Authentication failed',
+        description:
+          'response' in e
+            ? e.response?.data?.message
+            : error instanceof Error
+              ? error.message
+              : 'Authentication failed',
         variant: 'destructive',
       })
     } finally {
@@ -119,8 +123,8 @@ const Login = () => {
             {isLoading
               ? 'authenticating...'
               : isRegister
-              ? 'create account'
-              : 'login'}
+                ? 'create account'
+                : 'login'}
           </button>
 
           <div className="text-center">
