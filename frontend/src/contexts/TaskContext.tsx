@@ -101,6 +101,21 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  const deleteCompletedTasks = async () => {
+    try {
+      const completedTaskIds = tasks
+        .filter((task) => task.completed)
+        .map((task) => task.id)
+      if (completedTaskIds.length === 0) return
+
+      await api.delete('/tasks', { data: { ids: completedTaskIds } })
+      setTasks((prev) => prev.filter((task) => !task.completed))
+    } catch (error) {
+      console.error('Error deleting completed tasks:', error)
+      throw error
+    }
+  }
+
   return (
     <TaskContext.Provider
       value={{
@@ -109,6 +124,7 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
         updateTask,
         deleteTask,
         deleteTasks,
+        deleteCompletedTasks,
         toggleTaskComplete,
         toggleTaskStarred,
         duplicateTask,

@@ -6,6 +6,7 @@ export interface TaskContextType {
   updateTask: (id: string, task: Partial<Task>) => Promise<Task>
   deleteTask: (id: string) => Promise<void>
   deleteTasks: (ids: string[]) => Promise<void>
+  deleteCompletedTasks: () => Promise<void>
   toggleTaskComplete: (id: string) => Promise<Task>
   toggleTaskStarred: (id: string) => Promise<Task>
   duplicateTask: (id: string) => Promise<Task>

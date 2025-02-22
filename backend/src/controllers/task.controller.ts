@@ -7,7 +7,10 @@ import { Prisma, Priority } from '@prisma/client'
 const taskSchema = z.object({
   title: z.string().min(1).max(100),
   description: z.string().optional(),
-  dueDate: z.string().datetime().nullish(),
+  dueDate: z
+    .string()
+    .transform((date) => (date ? new Date(date).toISOString() : null))
+    .nullish(),
   priority: z.enum(['High', 'Medium', 'Low']).nullish(),
   category: z.string().nullish(),
   completed: z.boolean().default(false),

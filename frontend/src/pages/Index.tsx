@@ -13,6 +13,7 @@ const Index = () => {
     updateTask,
     deleteTask,
     deleteTasks,
+    deleteCompletedTasks,
     toggleTaskComplete,
     toggleTaskStarred,
     duplicateTask,
@@ -62,7 +63,9 @@ const Index = () => {
     try {
       const taskData = {
         ...newTask,
-        dueDate: newTask.dueDate || null,
+        dueDate: newTask.dueDate
+          ? new Date(newTask.dueDate).toISOString()
+          : null,
         priority: newTask.priority || null,
         category: newTask.category || null,
         completed: false,
@@ -148,6 +151,38 @@ const Index = () => {
       toast({
         title: 'Error',
         description: 'Failed to update task',
+        variant: 'destructive',
+      })
+    }
+  }
+
+  const handleDeleteTask = async (id: string) => {
+    try {
+      await deleteTask(id)
+      toast({
+        title: 'Success',
+        description: 'Task deleted successfully',
+      })
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to delete task',
+        variant: 'destructive',
+      })
+    }
+  }
+
+  const handleDeleteCompleted = async () => {
+    try {
+      await deleteCompletedTasks()
+      toast({
+        title: 'Success',
+        description: 'Completed tasks deleted successfully',
+      })
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to delete completed tasks',
         variant: 'destructive',
       })
     }
@@ -462,6 +497,13 @@ const Index = () => {
                   >
                     <CheckCircle2 className="h-4 w-4" />
                   </button>
+                  <button
+                    onClick={() => handleDeleteTask(task.id)}
+                    className="rounded p-1 text-terminal-fg/50 hover:bg-terminal-border/20"
+                    title="Delete task"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
                 </div>
               </div>
             ))}
@@ -470,9 +512,18 @@ const Index = () => {
 
         {completedTasks.length > 0 && (
           <div className="space-y-4 rounded-lg border border-terminal-border bg-terminal-bg/50 p-6 backdrop-blur">
-            <h2 className="text-xl font-bold text-terminal-accent/75">
-              Completed Tasks
-            </h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-bold text-terminal-accent/75">
+                Completed Tasks
+              </h2>
+              <button
+                onClick={handleDeleteCompleted}
+                className="flex items-center gap-2 rounded bg-terminal-error px-3 py-1 text-sm text-white transition-opacity hover:opacity-90"
+              >
+                <Trash2 className="h-4 w-4" />
+                Delete All
+              </button>
+            </div>
             <div className="space-y-2 opacity-75">
               {completedTasks.map((task) => (
                 <div

@@ -10,6 +10,8 @@
     "generate": "npx prisma generate",
     "migrate": "npx prisma migrate dev ts-node src/scripts/init-db.ts",
     "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "format": "prettier --config .prettierrc --write \"src/**/*.{ts,tsx,js,jsx}\"",
     "format:check": "prettier --config .prettierrc --check \"src/**/*.{ts,tsx,js,jsx}\"",
     "lint": "eslint ."
@@ -59,5 +61,17 @@
     "@routes": "dist/routes",
     "@lib": "dist/lib",
     "@types": "dist/types"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "setupFilesAfterEnv": ["<rootDir>/src/tests/setup.ts"],
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/src/$1"
+    },
+    "testTimeout": 10000,
+    "forceExit": true,
+    "clearMocks": true,
+    "detectOpenHandles": true
   }
 }
